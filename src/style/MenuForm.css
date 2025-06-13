@@ -1,0 +1,106 @@
+.menu-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.menu-form fieldset {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 20px;
+}
+
+.menu-form legend {
+  font-weight: 600;
+  color: var(--color-vert);
+  margin-bottom: 10px;
+}
+
+.menu-form label {
+  display: block;
+  margin-top: 10px;
+  font-weight: 500;
+}
+
+.menu-form input,
+.menu-form select,
+.menu-form textarea {
+  width: 100%;
+  padding: 10px;
+  margin-top: 5px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 15px;
+  max-width: 100%; /* empêche les débordements */
+  box-sizing: border-box; /* inclut padding/border dans la width */
+}
+
+.menu-form textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+.menu-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); /* 2 colonnes fixes */
+  gap: 20px;
+}
+
+
+.menu-composition-block {
+  background-color: var(--color-blanc);
+  padding: 15px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.menu-composition-block input,
+.menu-composition-block textarea {
+  width: 100%;
+  max-width: 100%; /* empêche les débordements */
+  box-sizing: border-box; /* inclut padding/border dans la width */
+}
+
+.menu-buttons {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.button-primary {
+  background: linear-gradient(135deg, var(--color-vert), #68a58d);
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 500;
+  transition: transform 0.1s ease, box-shadow 0.2s ease;
+}
+
+.button-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.button-secondary {
+  background: linear-gradient(135deg, #e0f0ea, #cce5df);
+  color: var(--color-vert);
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 500;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.button-secondary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+}

@@ -1,0 +1,133 @@
+.menu-planning-container {
+  margin-top: 20px;
+}
+
+.menu-planning-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0 10px; /* espace entre les lignes */
+}
+
+.menu-planning-table th {
+  background-color: var(--color-blanc);
+  color: var(--color-main-text);
+  font-weight: 600;
+  padding: 12px;
+  border-bottom: 2px solid #ccc;
+  text-align: center;
+  border-radius: 10px 10px 0 0;
+}
+
+.menu-planning-table td {
+  background-color: var(--color-blanc);
+  padding: 15px;
+  border: 1px solid #ddd;
+  text-align: center;
+  border-radius: 10px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.menu-planning-day {
+  font-weight: 600;
+  color: var(--color-vert);
+  font-size: 16px;
+}
+
+.menu-planning-menu {
+  margin-bottom: 8px;
+}
+
+.menu-planning-button {
+  background: linear-gradient(135deg, var(--color-vert), #68a58d);
+  color: white;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: transform 0.1s ease, box-shadow 0.2s ease;
+}
+
+.menu-planning-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.menu-planning-header {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.menu-planning-header label {
+  font-weight: 500;
+}
+
+.menu-planning-header input[type="date"] {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 15px;
+}
+
+.menu-planning-week-label {
+  font-weight: 600;
+  color: var(--color-vert);
+  margin-left: auto;
+}
+
+.menu-planning-menus-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.menu-planning-menu-item {
+  background-color: var(--color-blanc);
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 10px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  text-align: left;
+}
+
+.menu-planning-menu-name {
+  font-weight: 600;
+  color: var(--color-main-text);
+  margin-bottom: 5px;
+}
+
+.menu-planning-effectif {
+  margin-top: 5px;
+}
+
+.menu-planning-effectif label {
+  font-size: 14px;
+  margin-right: 5px;
+}
+
+.menu-planning-effectif input {
+  width: 100%;
+  padding: 6px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+.menu-planning-delete-button {
+  margin-top: 8px;
+  background-color: #f5d6d6;
+  color: #a94442;
+  border: none;
+  padding: 6px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.menu-planning-delete-button:hover {
+  background-color: #f2bcbc;
+}

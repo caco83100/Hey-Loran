@@ -22,6 +22,7 @@
   background-color: var(--color-sidebar-bg);
   color: var(--color-vert);
   padding: 20px;
+  padding-top: 0px;
   display: flex;
   flex-direction: column;
   border-right: 1px solid #cdded8;
@@ -30,8 +31,7 @@
 .sidebar-header {
   display: flex;
   align-items: center;
-  gap: 10px;
-  margin-bottom: 20px;
+  margin: 10px;
 }
 
 .logo-icon {
@@ -66,4 +66,11 @@
   display: inline-block;
   vertical-align: middle;
   margin-right: 8px;
+}
+
+.sidebar-logo {
+  height: 150px; /* ajuste la taille selon tes besoins */
+  margin :30px;
+  margin-bottom: 5px;
+  margin-top: 5px;
 }

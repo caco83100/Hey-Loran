@@ -1,7 +1,10 @@
 import { Routes, Route } from 'react-router-dom';
 import Sidebar from './components/Sidebar';
-import MenusPage from './pages/MenusPage';
 import DashboardPage from './pages/DashboardPage';
+import MenusPage from './pages/MenusPage';
+import MenuFormPage from './pages/MenuFormPage';
+import MenuHistoryPage from './pages/MenuHistoryPage';
+import MenuPlanningPage from './pages/MenuPlanningPage';
 
 function App() {
   return (
@@ -11,7 +14,9 @@ function App() {
         <Routes>
           <Route path="/" element={<DashboardPage />} />
           <Route path="/menus" element={<MenusPage />} />
-          {/* tu pourras ajouter d’autres routes ici */}
+          <Route path="/menus/add" element={<MenuFormPage />} />
+          <Route path="/menus/history" element={<MenuHistoryPage />} />
+          <Route path="/menus/planning" element={<MenuPlanningPage />} />
         </Routes>
       </main>
     </div>

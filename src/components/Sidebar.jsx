@@ -1,41 +1,56 @@
 import { NavLink } from 'react-router-dom';
+
+import logoImage from '../assets/logo.png';
 import '../style/Sidebar.css';
 
 function Sidebar() {
   return (
     <div className="sidebar">
       <div className="sidebar-header">
-        <span className="material-symbols-outlined logo-icon">restaurant</span>
-        <h2>HeyLoran</h2>
+        <img src={logoImage} alt="Logo HeyLoran" className="sidebar-logo" />
       </div>
-      <ul>
-        <li>
+
+      <div className="sidebar-links">
+        <NavLink to="/" className="sidebar-link">
           <span className="material-symbols-outlined">dashboard</span>
-          <NavLink to="/">Tableau de bord</NavLink>
-        </li>
-        <li>
-          <span className="material-symbols-outlined">track_changes</span> Traçabilité
-        </li>
-        <li>
-          <span className="material-symbols-outlined">person</span> Données Résidents
-        </li>
-        <li>
+          Tableau de bord
+        </NavLink>
+
+        <NavLink to="/tracabilite" className="sidebar-link">
+          <span className="material-symbols-outlined">track_changes</span>
+          Traçabilité
+        </NavLink>
+
+        <NavLink to="/residents" className="sidebar-link">
+          <span className="material-symbols-outlined">person</span>
+          Données Résidents
+        </NavLink>
+
+        <NavLink to="/menus" className="sidebar-link">
           <span className="material-symbols-outlined">restaurant</span>
-          <NavLink to="/menus">Menus (Adaptation)</NavLink>
-        </li>
-        <li>
-          <span className="material-symbols-outlined">send</span> Envoi Cuisine
-        </li>
-        <li>
-          <span className="material-symbols-outlined">tv</span> Affichage Cuisine
-        </li>
-        <li>
-          <span className="material-symbols-outlined">swap_horiz</span> Conversion Formats
-        </li>
-        <li>
-          <span className="material-symbols-outlined">smart_toy</span> Assistant IA
-        </li>
-      </ul>
+          Menus (Adaptation)
+        </NavLink>
+
+        <NavLink to="/envoi" className="sidebar-link">
+          <span className="material-symbols-outlined">send</span>
+          Envoi Cuisine
+        </NavLink>
+
+        <NavLink to="/affichage" className="sidebar-link">
+          <span className="material-symbols-outlined">tv</span>
+          Affichage Cuisine
+        </NavLink>
+
+        <NavLink to="/conversion" className="sidebar-link">
+          <span className="material-symbols-outlined">swap_horiz</span>
+          Conversion Formats
+        </NavLink>
+
+        <NavLink to="/assistant" className="sidebar-link">
+          <span className="material-symbols-outlined">smart_toy</span>
+          Assistant IA
+        </NavLink>
+      </div>
     </div>
   );
 }
