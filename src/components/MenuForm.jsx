@@ -17,7 +17,9 @@ function MenuForm({ mode, initialMenuData, defaultDate, defaultMoment, onClose }
     commentaires: '',
   });
 
-  const [residentsList, setResidentsList] = useState([{ name: '' }]);
+  const [allResidents, setAllResidents] = useState([]);
+  const [residentSearch, setResidentSearch] = useState('');
+  const [selectedResidents, setSelectedResidents] = useState([]); // tableau de residents sélectionnés
 
   useEffect(() => {
     if (mode === 'edit' && initialMenuData) {
@@ -35,17 +37,42 @@ function MenuForm({ mode, initialMenuData, defaultDate, defaultMoment, onClose }
         boissonIngredients: initialMenuData.boissonIngredients,
         commentaires: initialMenuData.commentaires,
       });
-      // TODO : plus tard → load residents depuis BDD
-      setResidentsList([{ name: '' }]); // pour l'instant on remet à vide
     } else if (mode === 'add') {
       setMenu((prev) => ({
         ...prev,
         date: defaultDate || '',
         moment: defaultMoment || 'Déjeuner',
       }));
-      setResidentsList([{ name: '' }]);
+      setSelectedResidents([]);
     }
   }, [mode, initialMenuData, defaultDate, defaultMoment]);
+
+  // Chargement des residents
+  useEffect(() => {
+    const fetchResidents = async () => {
+      try {
+        const response = await fetch('http://localhost:4000/residents');
+        const data = await response.json();
+        setAllResidents(data);
+      } catch (error) {
+        console.error('Erreur lors du chargement des résidents:', error);
+      }
+    };
+
+    fetchResidents();
+  }, []);
+
+  // Synchronisation des residents en mode edit
+  useEffect(() => {
+    if (mode === 'edit' && initialMenuData && allResidents.length > 0) {
+      if (initialMenuData.residents && Array.isArray(initialMenuData.residents)) {
+        const selected = allResidents.filter(r => initialMenuData.residents.includes(r.id));
+        setSelectedResidents(selected);
+      } else {
+        setSelectedResidents([]);
+      }
+    }
+  }, [mode, initialMenuData, allResidents]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -55,41 +82,40 @@ function MenuForm({ mode, initialMenuData, defaultDate, defaultMoment, onClose }
     }));
   };
 
-  const handleResidentChange = (index, value) => {
-    const updatedResidents = [...residentsList];
-    updatedResidents[index].name = value;
-    setResidentsList(updatedResidents);
-  };
-
-  const handleAddResident = () => {
-    setResidentsList(prev => [...prev, { name: '' }]);
-  };
-
-  const handleDeleteResident = (index) => {
-    const updatedResidents = [...residentsList];
-    updatedResidents.splice(index, 1);
-    setResidentsList(updatedResidents);
-  };
-
   const saveMenu = async (menuData) => {
-    try {
-      const response = await fetch('http://localhost:4000/menus', {
+  try {
+    let response;
+
+    if (mode === 'edit' && initialMenuData && initialMenuData.id) {
+      // mode édition → PUT
+      response = await fetch(`http://localhost:4000/menus/${initialMenuData.id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(menuData),
+      });
+    } else {
+      // mode ajout → POST
+      response = await fetch('http://localhost:4000/menus', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(menuData),
       });
-
-      const data = await response.json();
-
-      if (data.success) {
-        console.log(`Menu sauvegardé avec l'ID ${data.id}`);
-      } else {
-        console.error('Erreur lors de la sauvegarde du menu');
-      }
-    } catch (error) {
-      console.error('Erreur réseau lors de la sauvegarde du menu:', error);
     }
-  };
+
+    const data = await response.json();
+
+    if (data.success) {
+      console.log(mode === 'edit'
+        ? `Menu modifié (id=${initialMenuData.id})`
+        : `Menu sauvegardé avec l'ID ${data.id}`);
+    } else {
+      console.error('Erreur lors de la sauvegarde du menu');
+    }
+  } catch (error) {
+    console.error('Erreur réseau lors de la sauvegarde du menu:', error);
+  }
+};
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -100,8 +126,8 @@ function MenuForm({ mode, initialMenuData, defaultDate, defaultMoment, onClose }
 
     await saveMenu({
       ...menu,
-      residents: residentsList,
-      effectif: residentsList.length,
+      residents: selectedResidents.map(r => r.id),
+      effectif: selectedResidents.length,
     });
 
     alert('Menu sauvegardé en BDD !');
@@ -172,22 +198,59 @@ function MenuForm({ mode, initialMenuData, defaultDate, defaultMoment, onClose }
       {/* Bloc 3 : Résidents affectés */}
       <fieldset>
         <legend>Résidents affectés</legend>
-        {residentsList.map((resident, index) => (
-          <div key={index} className="resident-row">
-            <input
-              type="text"
-              placeholder="Nom du résident"
-              value={resident.name}
-              onChange={(e) => handleResidentChange(index, e.target.value)}
-            />
-            <button type="button" onClick={() => handleDeleteResident(index)} className="button-secondary">Supprimer</button>
+
+        {/* Champ de recherche */}
+        <input
+          type="text"
+          placeholder="Rechercher un résident"
+          value={residentSearch}
+          onChange={(e) => setResidentSearch(e.target.value)}
+        />
+
+        {/* Liste filtrée */}
+        {residentSearch && (
+          <div className="resident-suggestions">
+            {allResidents
+              .filter(r =>
+                `${r.nom} ${r.prenom}`.toLowerCase().includes(residentSearch.toLowerCase()) &&
+                !selectedResidents.some(sr => sr.id === r.id)
+              )
+              .slice(0, 5)
+              .map(r => (
+                <div
+                  key={r.id}
+                  className="resident-suggestion-item"
+                  onClick={() => {
+                    setSelectedResidents(prev => [...prev, r]);
+                    setResidentSearch('');
+                  }}
+                >
+                  {r.nom} {r.prenom} ({r.aversion})
+                </div>
+              ))}
           </div>
-        ))}
-        <button type="button" onClick={handleAddResident} className="button-primary">
-          Ajouter un résident
-        </button>
+        )}
+
+        {/* Liste des résidents sélectionnés */}
+        <div className="resident-selected-list">
+          {selectedResidents.map(r => (
+            <div key={r.id} className="resident-selected-item">
+              {r.nom} {r.prenom}
+              <button
+                type="button"
+                onClick={() =>
+                  setSelectedResidents(prev => prev.filter(sr => sr.id !== r.id))
+                }
+                className="button-secondary"
+              >
+                Retirer
+              </button>
+            </div>
+          ))}
+        </div>
+
         <p style={{ marginTop: '10px', fontWeight: '500' }}>
-          Nombre total de résidents : {residentsList.length}
+          Nombre total de résidents : {selectedResidents.length}
         </p>
       </fieldset>
 

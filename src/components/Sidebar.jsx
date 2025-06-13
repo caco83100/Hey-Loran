@@ -28,7 +28,7 @@ function Sidebar() {
 
         <NavLink to="/residents" className="sidebar-link">
           <span className="material-symbols-outlined">person</span>
-          Données Résidents
+          Résidents
         </NavLink>
 
         <NavLink to="/envoi" className="sidebar-link">
