@@ -15,6 +15,11 @@ function Sidebar() {
           <span className="material-symbols-outlined">dashboard</span>
           Tableau de bord
         </NavLink>
+        
+        <NavLink to="/menus" className="sidebar-link">
+          <span className="material-symbols-outlined">restaurant</span>
+          Menus
+        </NavLink>
 
         <NavLink to="/tracabilite" className="sidebar-link">
           <span className="material-symbols-outlined">track_changes</span>
@@ -24,11 +29,6 @@ function Sidebar() {
         <NavLink to="/residents" className="sidebar-link">
           <span className="material-symbols-outlined">person</span>
           Données Résidents
-        </NavLink>
-
-        <NavLink to="/menus" className="sidebar-link">
-          <span className="material-symbols-outlined">restaurant</span>
-          Menus (Adaptation)
         </NavLink>
 
         <NavLink to="/envoi" className="sidebar-link">

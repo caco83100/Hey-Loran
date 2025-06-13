@@ -1,13 +1,19 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { format, addDays, startOfWeek } from 'date-fns';
 import { fr } from 'date-fns/locale';
 import '../style/MenuPlanningPage.css';
+import MenuForm from '../components/MenuForm';
 
 const services = ['Déjeuner', 'Dîner'];
 
 function MenuPlanningPage() {
-  const [planning, setPlanning] = useState({});
   const [selectedMonday, setSelectedMonday] = useState(startOfWeek(new Date(), { weekStartsOn: 1 }));
+  const [menus, setMenus] = useState([]);
+  const [showMenuForm, setShowMenuForm] = useState(false);
+  const [menuToEdit, setMenuToEdit] = useState(null);
+  const [defaultDate, setDefaultDate] = useState('');
+  const [defaultMoment, setDefaultMoment] = useState('');
+
 
   const joursSemaine = Array.from({ length: 7 }).map((_, index) =>
     format(addDays(selectedMonday, index), 'EEEE', { locale: fr })
@@ -17,45 +23,21 @@ function MenuPlanningPage() {
     format(addDays(selectedMonday, index), 'dd/MM')
   );
 
-  const handleAddMenu = (jour, service) => {
-    const menuName = prompt(`Nom du menu pour ${jour} - ${service}:`);
-    if (!menuName) return;
-    const effectif = parseInt(prompt(`Effectif pour le menu "${menuName}":`), 10);
-    if (isNaN(effectif)) return;
-
-    setPlanning(prev => {
-      const key = `${jour}_${service}`;
-      const existingMenus = prev[key] || [];
-      return {
-        ...prev,
-        [key]: [...existingMenus, { menu: menuName, effectif }]
-      };
-    });
+  const fetchMenus = async (fromDate, toDate) => {
+    try {
+      const response = await fetch(`http://localhost:4000/menus?from=${fromDate}&to=${toDate}`);
+      const data = await response.json();
+      setMenus(data);
+    } catch (error) {
+      console.error('Erreur lors du chargement des menus:', error);
+    }
   };
 
-  const handleEffectifChange = (jour, service, index, value) => {
-    setPlanning(prev => {
-      const key = `${jour}_${service}`;
-      const updatedMenus = [...prev[key]];
-      updatedMenus[index].effectif = value;
-      return {
-        ...prev,
-        [key]: updatedMenus
-      };
-    });
-  };
-
-  const handleDeleteMenu = (jour, service, index) => {
-    setPlanning(prev => {
-      const key = `${jour}_${service}`;
-      const updatedMenus = [...prev[key]];
-      updatedMenus.splice(index, 1);
-      return {
-        ...prev,
-        [key]: updatedMenus
-      };
-    });
-  };
+  useEffect(() => {
+    const fromDate = format(selectedMonday, 'yyyy-MM-dd');
+    const toDate = format(addDays(selectedMonday, 6), 'yyyy-MM-dd');
+    fetchMenus(fromDate, toDate);
+  }, [selectedMonday]);
 
   const handleChangeMonday = (e) => {
     setSelectedMonday(new Date(e.target.value));
@@ -67,13 +49,52 @@ function MenuPlanningPage() {
     return `Semaine du ${start} au ${end}`;
   };
 
+  const handleAddMenu = (jourIndex, service) => {
+    const date = format(addDays(selectedMonday, jourIndex), 'yyyy-MM-dd');
+    setDefaultDate(date);
+    setDefaultMoment(service);
+    setMenuToEdit(null); // mode ajout
+    setShowMenuForm(true);
+  };
+
+  const handleEditMenu = (menu) => {
+    setMenuToEdit(menu); // mode édition
+    setShowMenuForm(true);
+  };
+
+  const handleDeleteMenu = async (id) => {
+    if (window.confirm('Voulez-vous vraiment supprimer ce menu ?')) {
+        try {
+        const response = await fetch(`http://localhost:4000/menus/${id}`, {
+            method: 'DELETE',
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+            // refresh menus
+            fetchMenus(
+            format(selectedMonday, 'yyyy-MM-dd'),
+            format(addDays(selectedMonday, 6), 'yyyy-MM-dd')
+            );
+        } else {
+            alert('Erreur : impossible de supprimer ce menu.');
+        }
+        } catch (error) {
+        console.error('Erreur lors de la suppression du menu:', error);
+        }
+    }
+    };
+
+
+
   return (
     <div>
       <h1>Planning Semaine - Menus</h1>
 
       {/* Header Semaine */}
       <div className="menu-planning-header">
-        <label>Choisir la semaine (date du lundi) :</label>
+        <label>Choisir la semaine :</label>
         <input
           type="date"
           value={format(selectedMonday, 'yyyy-MM-dd')}
@@ -98,46 +119,46 @@ function MenuPlanningPage() {
               <tr key={jour}>
                 <td className="menu-planning-day">{jour} ({joursSemaineLabel[index]})</td>
                 {services.map(service => {
-                  const key = `${jour}_${service}`;
-                  const menus = planning[key] || [];
+                  const menusForCell = menus.filter(menu =>
+                    menu.date === format(addDays(selectedMonday, index), 'yyyy-MM-dd') &&
+                    menu.moment === service
+                  );
+
                   return (
                     <td key={service}>
                       <div className="menu-planning-menus-list">
-                        {menus.length > 0 ? (
-                          menus.map((menuObj, menuIndex) => (
-                            <div key={menuIndex} className="menu-planning-menu-item">
-                              <div className="menu-planning-menu-name">
-                                {menuObj.menu}
-                              </div>
-                              <div className="menu-planning-effectif">
-                                <label>Effectifs :</label>
-                                <input
-                                  type="number"
-                                  min="0"
-                                  value={menuObj.effectif}
-                                  onChange={(e) =>
-                                    handleEffectifChange(jour, service, menuIndex, parseInt(e.target.value, 10))
-                                  }
-                                />
-                              </div>
-                              <button
-                                className="menu-planning-delete-button"
-                                onClick={() => handleDeleteMenu(jour, service, menuIndex)}
-                              >
-                                Supprimer
-                              </button>
-                            </div>
-                          ))
+                        {menusForCell.length > 0 ? (
+                          menusForCell.map(menu => (
+                            <div
+                                key={menu.id}
+                                className="menu-planning-menu-item"
+                                onClick={() => handleEditMenu(menu)} 
+                                style={{ cursor: 'pointer' }}
+                                >
+                                <div style={{ flexGrow: 1 }}>
+                                    <strong>{menu.type}</strong>
+                                </div>
+                                <button
+                                    onClick={(e) => {
+                                    e.stopPropagation(); // pour éviter que le clic sur Supprimer ouvre le form
+                                    handleDeleteMenu(menu.id);
+                                    }}
+                                    className="menu-delete-button"
+                                >
+                                    Supprimer
+                                </button>
+                                </div>
+
+                            ))
+
                         ) : (
                           <em>Aucun menu</em>
                         )}
                       </div>
-                      <button
-                        onClick={() => handleAddMenu(jour, service)}
-                        className="menu-planning-button"
-                      >
+                      <button onClick={() => handleAddMenu(index, service)} className="menu-planning-button">
                         Ajouter un menu
                       </button>
+
                     </td>
                   );
                 })}
@@ -146,6 +167,26 @@ function MenuPlanningPage() {
           </tbody>
         </table>
       </div>
+      {showMenuForm && (
+        <div className="modal-overlay">
+            <div className="modal-content">
+            <MenuForm
+                mode={menuToEdit ? 'edit' : 'add'}
+                initialMenuData={menuToEdit}
+                defaultDate={defaultDate}
+                defaultMoment={defaultMoment}
+                onClose={() => {
+                setShowMenuForm(false);
+                setMenuToEdit(null);
+                fetchMenus(
+                    format(selectedMonday, 'yyyy-MM-dd'),
+                    format(addDays(selectedMonday, 6), 'yyyy-MM-dd')
+                ); // refresh menus après ajout/edition
+                }}
+            />
+            </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -13,10 +13,7 @@ function App() {
       <main className="main-content">
         <Routes>
           <Route path="/" element={<DashboardPage />} />
-          <Route path="/menus" element={<MenusPage />} />
-          <Route path="/menus/add" element={<MenuFormPage />} />
-          <Route path="/menus/history" element={<MenuHistoryPage />} />
-          <Route path="/menus/planning" element={<MenuPlanningPage />} />
+          <Route path="/menus" element={<MenuPlanningPage />} />
         </Routes>
       </main>
     </div>
