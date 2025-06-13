@@ -1,0 +1,49 @@
+:root {
+  --color-sidebar-bg: #d8ede3; /* vert pastel clair */
+  --color-sidebar-hover: #b7dbcd; /* hover vert pastel moyen */
+  --color-main-bg: #ffffff; /* blanc */
+  --color-main-text: #2e2e2e; /* gris foncé pro */
+  --color-vert: #2f6b5d; /* vert foncé doux */
+  --color-blanc: #ffffff;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  width: 100%;
+  overflow: hidden; /* évite le scroll inutile */
+  box-sizing: border-box;
+}
+
+.app-container {
+  display: flex;
+  height: 100vh; /* c'est bon */
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: var(--color-main-bg);
+  color: var(--color-main-text);
+  margin: 0;
+}
+
+.main-content {
+  flex: 1;
+  padding: 40px;
+  background-color: var(--color-main-bg);
+  overflow-y: auto;
+}
+
+/* Titres */
+h1 {
+  font-size: 28px;
+  margin-bottom: 20px;
+  font-weight: 600;
+  color: var(--color-main-text);
+}
+
+h2 {
+  font-size: 20px;
+  margin-top: 30px;
+  margin-bottom: 10px;
+  font-weight: 500;
+  color: var(--color-main-text);
+}

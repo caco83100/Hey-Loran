@@ -1,0 +1,32 @@
+.menu-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-top: 20px;
+}
+
+.menu-card {
+  background-color: var(--color-blanc);
+  border-radius: 10px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  padding: 20px;
+  border-left: 5px solid var(--color-vert);
+}
+
+.menu-card-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--color-vert);
+  margin-bottom: 10px;
+}
+
+.menu-card p {
+  margin: 5px 0;
+  color: var(--color-main-text);
+  font-size: 15px;
+}
+
+.menu-card em {
+  color: #666;
+  font-style: italic;
+}

@@ -1,0 +1,69 @@
+.sidebar-link {
+  text-decoration: none;
+  color: var(--color-vert);
+  display: flex;
+  align-items: center;
+  padding: 8px;
+  border-radius: 6px;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.sidebar-link:hover {
+  background-color: var(--color-sidebar-hover);
+}
+
+.sidebar-link.active {
+  background-color: var(--color-sidebar-hover);
+  font-weight: 600;
+}
+
+.sidebar {
+  width: 250px;
+  background-color: var(--color-sidebar-bg);
+  color: var(--color-vert);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid #cdded8;
+}
+
+.sidebar-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.logo-icon {
+  font-size: 32px;
+}
+
+.sidebar ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.sidebar li {
+  padding: 10px 5px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+}
+
+.sidebar li:hover {
+  background-color: var(--color-sidebar-hover);
+}
+
+.material-symbols-outlined {
+  font-family: 'Material Symbols Outlined';
+  font-weight: normal;
+  font-style: normal;
+  font-size: 20px;
+  display: inline-block;
+  vertical-align: middle;
+  margin-right: 8px;
+}
