@@ -19,7 +19,7 @@ function MenuForm({ mode, initialMenuData, defaultDate, defaultMoment, onClose }
 
   const [allResidents, setAllResidents] = useState([]);
   const [residentSearch, setResidentSearch] = useState('');
-  const [selectedResidents, setSelectedResidents] = useState([]); // tableau de residents sélectionnés
+  const [selectedResidents, setSelectedResidents] = useState([]);
 
   useEffect(() => {
     if (mode === 'edit' && initialMenuData) {
@@ -82,40 +82,49 @@ function MenuForm({ mode, initialMenuData, defaultDate, defaultMoment, onClose }
     }));
   };
 
-  const saveMenu = async (menuData) => {
-  try {
-    let response;
+  const saveMenu = async (menuData, service_id) => {
+    try {
+      let response;
 
-    if (mode === 'edit' && initialMenuData && initialMenuData.id) {
-      // mode édition → PUT
-      response = await fetch(`http://localhost:4000/menus/${initialMenuData.id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(menuData),
-      });
-    } else {
-      // mode ajout → POST
-      response = await fetch('http://localhost:4000/menus', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(menuData),
-      });
+      if (mode === 'edit' && initialMenuData && initialMenuData.id) {
+        // mode édition → PUT
+        response = await fetch(`http://localhost:4000/menus/${initialMenuData.id}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            ...menuData,
+            residents: selectedResidents.map(r => r.id),
+            effectif: selectedResidents.length,
+            service_id: service_id,
+          }),
+        });
+      } else {
+        // mode ajout → POST
+        response = await fetch('http://localhost:4000/menus', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            ...menuData,
+            residents: selectedResidents.map(r => r.id),
+            effectif: selectedResidents.length,
+            service_id: service_id,
+          }),
+        });
+      }
+
+      const data = await response.json();
+
+      if (data.success) {
+        console.log(mode === 'edit'
+          ? `Menu modifié (id=${initialMenuData.id})`
+          : `Menu sauvegardé avec l'ID ${data.id}`);
+      } else {
+        console.error('Erreur lors de la sauvegarde du menu');
+      }
+    } catch (error) {
+      console.error('Erreur réseau lors de la sauvegarde du menu:', error);
     }
-
-    const data = await response.json();
-
-    if (data.success) {
-      console.log(mode === 'edit'
-        ? `Menu modifié (id=${initialMenuData.id})`
-        : `Menu sauvegardé avec l'ID ${data.id}`);
-    } else {
-      console.error('Erreur lors de la sauvegarde du menu');
-    }
-  } catch (error) {
-    console.error('Erreur réseau lors de la sauvegarde du menu:', error);
-  }
-};
-
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -124,15 +133,29 @@ function MenuForm({ mode, initialMenuData, defaultDate, defaultMoment, onClose }
       return;
     }
 
-    await saveMenu({
-      ...menu,
-      residents: selectedResidents.map(r => r.id),
-      effectif: selectedResidents.length,
-    });
+    try {
+      // Étape 1 → s'assurer que le service existe et récupérer service_id
+      const serviceResponse = await fetch('http://localhost:4000/services', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          date: menu.date,
+          moment: menu.moment.trim(), // Ajout du .trim()
+        }),
+      });
 
-    alert('Menu sauvegardé en BDD !');
+      const serviceData = await serviceResponse.json();
+      const service_id = serviceData.id;
 
-    onClose(); // on ferme le modal après save
+      // Étape 2 → enregistrer le menu avec ce service_id
+      await saveMenu(menu, service_id);
+
+      alert('Menu sauvegardé en BDD !');
+      onClose(); // on ferme le modal après save
+    } catch (error) {
+      console.error('Erreur lors de la sauvegarde du menu:', error);
+      alert('Erreur réseau lors de la sauvegarde du menu.');
+    }
   };
 
   return (
@@ -199,7 +222,6 @@ function MenuForm({ mode, initialMenuData, defaultDate, defaultMoment, onClose }
       <fieldset>
         <legend>Résidents affectés</legend>
 
-        {/* Champ de recherche */}
         <input
           type="text"
           placeholder="Rechercher un résident"
@@ -207,7 +229,6 @@ function MenuForm({ mode, initialMenuData, defaultDate, defaultMoment, onClose }
           onChange={(e) => setResidentSearch(e.target.value)}
         />
 
-        {/* Liste filtrée */}
         {residentSearch && (
           <div className="resident-suggestions">
             {allResidents
@@ -231,7 +252,6 @@ function MenuForm({ mode, initialMenuData, defaultDate, defaultMoment, onClose }
           </div>
         )}
 
-        {/* Liste des résidents sélectionnés */}
         <div className="resident-selected-list">
           {selectedResidents.map(r => (
             <div key={r.id} className="resident-selected-item">

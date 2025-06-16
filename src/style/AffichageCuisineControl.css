@@ -1,0 +1,54 @@
+.affichage-control-container {
+  max-width: 600px;
+  margin: 2rem auto;
+  background: #f8fdfc;
+  padding: 2rem;
+  border: 1px solid #cbe3d8;
+  border-radius: 12px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.05);
+  font-family: Arial, sans-serif;
+}
+
+.affichage-control-container h2 {
+  color: #2f7a67;
+  margin-bottom: 1rem;
+}
+
+.affichage-control-container label {
+  display: block;
+  margin-top: 1rem;
+  font-weight: 500;
+  color: #355e53;
+}
+
+.affichage-control-container input[type="date"],
+.affichage-control-container select {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 16px;
+  margin-top: 5px;
+  background: white;
+}
+
+.affichage-control-container button {
+  margin-top: 1.5rem;
+  background-color: #3fa380;
+  color: white;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.affichage-control-container button:hover {
+  background-color: #348c6e;
+}
+
+.affichage-control-container p {
+  margin-top: 1rem;
+  font-weight: 500;
+}

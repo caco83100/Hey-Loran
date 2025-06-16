@@ -1,0 +1,50 @@
+.tracabilite-tabs {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.tracabilite-tabs button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 16px;
+  background-color: #e0f0ea;
+  color: var(--color-vert);
+}
+
+.tracabilite-tabs button.active {
+  background-color: var(--color-vert);
+  color: white;
+}
+
+.tracabilite-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.tracabilite-form input {
+  flex: 1 1 200px;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+
+.tracabilite-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.tracabilite-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border: 1px solid #ccc;
+  padding: 10px;
+  border-radius: 6px;
+  background-color: #fafafa;
+}

@@ -36,7 +36,7 @@ function Sidebar() {
           Envoi Cuisine
         </NavLink>
 
-        <NavLink to="/affichage" className="sidebar-link">
+        <NavLink to="/affichage-cuisine" className="sidebar-link">
           <span className="material-symbols-outlined">tv</span>
           Affichage Cuisine
         </NavLink>

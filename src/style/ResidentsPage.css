@@ -1,0 +1,45 @@
+.resident-form {
+  margin-bottom: 20px;
+}
+
+.resident-form fieldset {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 20px;
+}
+
+.resident-form legend {
+  font-weight: 600;
+  color: var(--color-vert);
+  margin-bottom: 10px;
+}
+
+.resident-form label {
+  display: block;
+  margin-top: 10px;
+  font-weight: 500;
+}
+
+.resident-form input {
+  width: 100%;
+  padding: 10px;
+  margin-top: 5px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 15px;
+}
+
+.resident-list {
+  margin-top: 20px;
+}
+
+.resident-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 15px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  margin-bottom: 10px;
+  background-color: #fafafa;
+}
