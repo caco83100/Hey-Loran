@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
+const ip = import.meta.env.VITE_SERVER_IP;
 
 function ParServiceTracabilite() {
   const [searchParams] = useSearchParams();
@@ -42,7 +43,7 @@ function ParServiceTracabilite() {
 
   const fetchServices = async () => {
     try {
-      const response = await fetch('http://localhost:4000/services');
+      const response = await fetch(`http://${ip}:4000/services`);
       const data = await response.json();
       setServices(data);
     } catch (error) {
@@ -51,19 +52,19 @@ function ParServiceTracabilite() {
   };
 
   const fetchCahierChaine = async (service_id) => {
-    const response = await fetch(`http://localhost:4000/cahier_chaine?service_id=${service_id}`);
+    const response = await fetch(`http://${ip}:4000/cahier_chaine?service_id=${service_id}`);
     const data = await response.json();
     setCahierChaine(data);
   };
 
   const fetchMixes = async (service_id) => {
-    const response = await fetch(`http://localhost:4000/mixes?service_id=${service_id}`);
+    const response = await fetch(`http://${ip}:4000/mixes?service_id=${service_id}`);
     const data = await response.json();
     setMixes(data);
   };
 
   const fetchRefroidissement = async (service_id) => {
-    const response = await fetch(`http://localhost:4000/refroidissement_remise?service_id=${service_id}`);
+    const response = await fetch(`http://${ip}:4000/refroidissement_remise?service_id=${service_id}`);
     const data = await response.json();
     setRefroidissement(data);
   };
@@ -91,7 +92,7 @@ function ParServiceTracabilite() {
 
   const handleAddCahier = async (e) => {
     e.preventDefault();
-    const response = await fetch('http://localhost:4000/cahier_chaine', {
+    const response = await fetch(`http://${ip}:4000/cahier_chaine`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ service_id: selectedService.id, ...newCahier }),
@@ -104,13 +105,13 @@ function ParServiceTracabilite() {
   };
 
   const handleDeleteCahier = async (id) => {
-    await fetch(`http://localhost:4000/cahier_chaine/${id}`, { method: 'DELETE' });
+    await fetch(`http://${ip}:4000/cahier_chaine/${id}`, { method: 'DELETE' });
     fetchCahierChaine(selectedService.id);
   };
 
   const handleAddMix = async (e) => {
     e.preventDefault();
-    const response = await fetch('http://localhost:4000/mixes', {
+    const response = await fetch(`http://${ip}:4000/mixes`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ service_id: selectedService.id, ...newMix }),
@@ -123,13 +124,13 @@ function ParServiceTracabilite() {
   };
 
   const handleDeleteMix = async (id) => {
-    await fetch(`http://localhost:4000/mixes/${id}`, { method: 'DELETE' });
+    await fetch(`http://${ip}:4000/mixes/${id}`, { method: 'DELETE' });
     fetchMixes(selectedService.id);
   };
 
   const handleAddRefroidissement = async (e) => {
     e.preventDefault();
-    const response = await fetch('http://localhost:4000/refroidissement_remise', {
+    const response = await fetch(`http://${ip}:4000/refroidissement_remise`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ service_id: selectedService.id, ...newRefroidissement }),
@@ -142,7 +143,7 @@ function ParServiceTracabilite() {
   };
 
   const handleDeleteRefroidissement = async (id) => {
-    await fetch(`http://localhost:4000/refroidissement_remise/${id}`, { method: 'DELETE' });
+    await fetch(`http://${ip}:4000/refroidissement_remise/${id}`, { method: 'DELETE' });
     fetchRefroidissement(selectedService.id);
   };
 

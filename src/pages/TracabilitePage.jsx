@@ -3,6 +3,8 @@ import { useEffect } from 'react';
 import ParServiceTracabilite from '../components/ParServiceTracabilite.jsx';
 import '../style/TracabilitePage.css';
 
+const ip = import.meta.env.VITE_SERVER_IP;
+
 function TracabilitePage() {
   const [activeTab, setActiveTab] = useState('par_menu');
 
@@ -32,7 +34,7 @@ function TracabilitePage() {
   // Charger données Réception produits
   const fetchReception = async () => {
     try {
-      const response = await fetch('http://localhost:4000/controle_reception');
+      const response = await fetch(`http://${ip}:4000/controle_reception`);
       const data = await response.json();
       setReceptionList(data);
     } catch (error) {
@@ -43,7 +45,7 @@ function TracabilitePage() {
   // Charger données Températures équipements
   const fetchEquipements = async () => {
     try {
-      const response = await fetch('http://localhost:4000/temperature_equipements');
+      const response = await fetch(`http://${ip}:4000/temperature_equipements`);
       const data = await response.json();
       setEquipementsList(data);
     } catch (error) {
@@ -61,7 +63,7 @@ function TracabilitePage() {
   const handleAddReception = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch('http://localhost:4000/controle_reception', {
+      const response = await fetch(`http://${ip}:4000/controle_reception`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(newReception),
@@ -89,7 +91,7 @@ function TracabilitePage() {
   const handleDeleteReception = async (id) => {
     if (window.confirm('Supprimer cette ligne ?')) {
       try {
-        await fetch(`http://localhost:4000/controle_reception/${id}`, { method: 'DELETE' });
+        await fetch(`http://${ip}:4000/controle_reception/${id}`, { method: 'DELETE' });
         fetchReception();
       } catch (error) {
         console.error('Erreur suppression reception:', error);
@@ -101,7 +103,7 @@ function TracabilitePage() {
   const handleAddEquipement = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch('http://localhost:4000/temperature_equipements', {
+      const response = await fetch(`http://${ip}:4000/temperature_equipements`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(newEquipement),
@@ -126,7 +128,7 @@ function TracabilitePage() {
   const handleDeleteEquipement = async (id) => {
     if (window.confirm('Supprimer cette ligne ?')) {
       try {
-        await fetch(`http://localhost:4000/temperature_equipements/${id}`, { method: 'DELETE' });
+        await fetch(`http://${ip}:4000/temperature_equipements/${id}`, { method: 'DELETE' });
         fetchEquipements();
       } catch (error) {
         console.error('Erreur suppression equipement:', error);

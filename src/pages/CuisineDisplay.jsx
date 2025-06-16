@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { format } from 'date-fns';
 import '../style/CuisineDisplay.css';
+const ip = import.meta.env.VITE_SERVER_IP;
 
 function CuisineDisplay() {
   const [data, setData] = useState(null);
@@ -32,7 +33,7 @@ function CuisineDisplay() {
       if (!config) return;
 
       try {
-        const response = await fetch(`http://192.168.0.30:4000/affichage-cuisine?date=${config.date}&moment=${encodeURIComponent(config.moment)}`);
+        const response = await fetch(`http://${ip}:4000/affichage-cuisine?date=${config.date}&moment=${encodeURIComponent(config.moment)}`);
         const result = await response.json();
         setData(result);
       } catch (err) {

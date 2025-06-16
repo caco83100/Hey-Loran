@@ -3,6 +3,7 @@ import { format, addDays, startOfWeek } from 'date-fns';
 import { fr } from 'date-fns/locale';
 import '../style/MenuPlanningPage.css';
 import MenuForm from '../components/MenuForm';
+const ip = import.meta.env.VITE_SERVER_IP;
 
 const services = ['Déjeuner', 'Dîner'];
 
@@ -25,7 +26,7 @@ function MenuPlanningPage() {
 
   const fetchMenus = async (fromDate, toDate) => {
     try {
-      const response = await fetch(`http://localhost:4000/menus?from=${fromDate}&to=${toDate}`);
+      const response = await fetch(`http://${ip}:4000/menus?from=${fromDate}&to=${toDate}`);
       const data = await response.json();
       setMenus(data);
     } catch (error) {
@@ -65,7 +66,7 @@ function MenuPlanningPage() {
   const handleDeleteMenu = async (id) => {
     if (window.confirm('Voulez-vous vraiment supprimer ce menu ?')) {
         try {
-        const response = await fetch(`http://localhost:4000/menus/${id}`, {
+        const response = await fetch(`http://${ip}:4000/menus/${id}`, {
             method: 'DELETE',
         });
 

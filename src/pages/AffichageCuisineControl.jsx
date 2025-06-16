@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { format } from 'date-fns';
 import '../style/AffichageCuisineControl.css';
+const ip = import.meta.env.VITE_SERVER_IP;
 
 function AffichageCuisineControl() {
   const [date, setDate] = useState(format(new Date(), 'yyyy-MM-dd'));
@@ -9,7 +10,7 @@ function AffichageCuisineControl() {
 
   const saveConfig = async () => {
     try {
-      const response = await fetch('http://localhost:4000/affichage-config', {
+      const response = await fetch(`http://${ip}:4000/affichage-config`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ date, moment })

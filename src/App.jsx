@@ -6,10 +6,13 @@ import ResidentsPage from './pages/ResidentsPage';
 import TracabilitePage from './pages/TracabilitePage';
 import AffichageCuisineControl from './pages/AffichageCuisineControl';
 import CuisineDisplay from './pages/CuisineDisplay';
+const ip = import.meta.env.VITE_SERVER_IP;
 
 
 
-function App() {
+function App(
+) {
+   console.log(`Application démarrée avec l'IP du serveur : ${ip}`);
   return (
     <div className="app-container">
       <Sidebar />

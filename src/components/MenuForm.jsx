@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import '../style/MenuForm.css';
+const ip = import.meta.env.VITE_SERVER_IP;
 
 function MenuForm({ mode, initialMenuData, defaultDate, defaultMoment, onClose }) {
   const [menu, setMenu] = useState({
@@ -51,7 +52,7 @@ function MenuForm({ mode, initialMenuData, defaultDate, defaultMoment, onClose }
   useEffect(() => {
     const fetchResidents = async () => {
       try {
-        const response = await fetch('http://localhost:4000/residents');
+        const response = await fetch(`http://${ip}:4000/residents`);
         const data = await response.json();
         setAllResidents(data);
       } catch (error) {
@@ -88,7 +89,7 @@ function MenuForm({ mode, initialMenuData, defaultDate, defaultMoment, onClose }
 
       if (mode === 'edit' && initialMenuData && initialMenuData.id) {
         // mode édition → PUT
-        response = await fetch(`http://localhost:4000/menus/${initialMenuData.id}`, {
+        response = await fetch(`http://${ip}:4000/menus/${initialMenuData.id}`, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -100,7 +101,7 @@ function MenuForm({ mode, initialMenuData, defaultDate, defaultMoment, onClose }
         });
       } else {
         // mode ajout → POST
-        response = await fetch('http://localhost:4000/menus', {
+        response = await fetch(`http://${ip}:4000/menus`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -135,7 +136,7 @@ function MenuForm({ mode, initialMenuData, defaultDate, defaultMoment, onClose }
 
     try {
       // Étape 1 → s'assurer que le service existe et récupérer service_id
-      const serviceResponse = await fetch('http://localhost:4000/services', {
+      const serviceResponse = await fetch(`http://${ip}:4000/services`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

@@ -2,6 +2,10 @@ const express = require('express');
 const Database = require('better-sqlite3');
 const cors = require('cors');
 const bodyParser = require('body-parser');
+require('dotenv').config(); // charge le .env
+
+const ip = process.env.SERVER_IP;
+console.log("Adresse IP utilisée :", ip);
 
 const app = express();
 const port = 4000;
@@ -145,7 +149,7 @@ app.get('/menus', (req, res) => {
       ORDER BY date ASC, moment ASC
     `).all(from, to);
   } else {
-    menus = db.prepare('SELECT * FROM menus ORDER BY date DESC').all();
+    menus = db.prepare(`SELECT * FROM menus ORDER BY date DESC`).all();
   }
 
   res.json(menus.map(menu => ({
@@ -179,8 +183,8 @@ app.post('/menus', (req, res) => {
       residents,
       service_id
     )
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-  `);
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+  );
 
   const info = stmt.run(
     date, moment, type,
@@ -254,7 +258,7 @@ app.put('/menus/:id', (req, res) => {
 app.delete('/menus/:id', (req, res) => {
   const { id } = req.params;
 
-  const stmt = db.prepare('DELETE FROM menus WHERE id = ?');
+  const stmt = db.prepare(`DELETE FROM menus WHERE id = ?`);
   const info = stmt.run(Number(id));
 
   if (info.changes > 0) {
@@ -272,12 +276,12 @@ app.delete('/menus/:id', (req, res) => {
 app.post('/services', (req, res) => {
   const { date, moment } = req.body;
 
-  const existing = db.prepare('SELECT id FROM services WHERE date = ? AND moment = ?').get(date, moment);
+  const existing = db.prepare(`SELECT id FROM services WHERE date = ? AND moment = ?`).get(date, moment);
 
   if (existing) {
     res.json({ success: true, id: existing.id });
   } else {
-    const stmt = db.prepare('INSERT INTO services (date, moment) VALUES (?, ?)');
+    const stmt = db.prepare(`INSERT INTO services (date, moment) VALUES (?, ?)`);
     const info = stmt.run(date, moment);
     res.json({ success: true, id: info.lastInsertRowid });
   }
@@ -288,17 +292,17 @@ app.get('/services', (req, res) => {
   const { date, moment } = req.query;
 
   if (date && moment) {
-    const service = db.prepare('SELECT * FROM services WHERE date = ? AND moment = ?').get(date, moment);
+    const service = db.prepare(`SELECT * FROM services WHERE date = ? AND moment = ?`).get(date, moment);
     if (service) {
       res.json([service]);
     } else {
       res.json([]);
     }
   } else if (date) {
-    const services = db.prepare('SELECT * FROM services WHERE date = ? ORDER BY moment ASC').all(date);
+    const services = db.prepare(`SELECT * FROM services WHERE date = ? ORDER BY moment ASC`).all(date);
     res.json(services);
   } else {
-    const services = db.prepare('SELECT * FROM services ORDER BY date DESC, moment ASC').all();
+    const services = db.prepare(`SELECT * FROM services ORDER BY date DESC, moment ASC`).all();
     res.json(services);
   }
 });
@@ -308,7 +312,7 @@ app.get('/services', (req, res) => {
 // ------------------------------------------------------------
 
 app.get('/residents', (req, res) => {
-  const residents = db.prepare('SELECT * FROM residents ORDER BY nom ASC, prenom ASC').all();
+  const residents = db.prepare(`SELECT * FROM residents ORDER BY nom ASC, prenom ASC`).all();
   res.json(residents);
 });
 
@@ -327,7 +331,7 @@ app.post('/residents', (req, res) => {
 app.delete('/residents/:id', (req, res) => {
   const { id } = req.params;
 
-  const stmt = db.prepare('DELETE FROM residents WHERE id = ?');
+  const stmt = db.prepare(`DELETE FROM residents WHERE id = ?`);
   const info = stmt.run(Number(id));
 
   if (info.changes > 0) {
@@ -350,13 +354,13 @@ app.get('/affichage-cuisine', (req, res) => {
     return res.status(400).json({ success: false, message: 'Paramètres manquants (date, moment)' });
   }
 
-  const service = db.prepare('SELECT * FROM services WHERE date = ? AND moment = ?').get(date, moment);
+  const service = db.prepare(`SELECT * FROM services WHERE date = ? AND moment = ?`).get(date, moment);
 
   if (!service) {
     return res.json({ success: true, serviceFound: false });
   }
 
-  const menus = db.prepare('SELECT * FROM menus WHERE service_id = ?').all(service.id);
+  const menus = db.prepare(`SELECT * FROM menus WHERE service_id = ?`).all(service.id);
 
   const residentsSet = new Set();
   menus.forEach(menu => {
@@ -371,7 +375,7 @@ app.get('/affichage-cuisine', (req, res) => {
   });
 
   const residents = Array.from(residentsSet).map(id => {
-    return db.prepare('SELECT * FROM residents WHERE id = ?').get(id);
+    return db.prepare(`SELECT * FROM residents WHERE id = ?`).get(id);
   }).filter(r => r);
 
   res.json({
@@ -387,7 +391,7 @@ app.get('/affichage-cuisine', (req, res) => {
 
 // Récupérer la config actuelle
 app.get('/affichage-config', (req, res) => {
-  const config = db.prepare('SELECT * FROM affichage_config WHERE id = 1').get();
+  const config = db.prepare(`SELECT * FROM affichage_config WHERE id = 1`).get();
   if (config) {
     res.json({ success: true, config });
   } else {
@@ -399,11 +403,11 @@ app.get('/affichage-config', (req, res) => {
 app.post('/affichage-config', (req, res) => {
   const { date, moment } = req.body;
 
-  const exists = db.prepare('SELECT * FROM affichage_config WHERE id = 1').get();
+  const exists = db.prepare(`SELECT * FROM affichage_config WHERE id = 1`).get();
   if (exists) {
-    db.prepare('UPDATE affichage_config SET date = ?, moment = ? WHERE id = 1').run(date, moment);
+    db.prepare(`UPDATE affichage_config SET date = ?, moment = ? WHERE id = 1`).run(date, moment);
   } else {
-    db.prepare('INSERT INTO affichage_config (id, date, moment) VALUES (1, ?, ?)').run(date, moment);
+    db.prepare(`INSERT INTO affichage_config (id, date, moment) VALUES (1, ?, ?)`).run(date, moment);
   }
 
   res.json({ success: true });
@@ -413,5 +417,5 @@ app.post('/affichage-config', (req, res) => {
 // ------------------------------------------------------------
 
 app.listen(port, () => {
-  console.log(`✅ HeyLoran Backend API running → http://localhost:${port}`);
+  console.log(`!!! HeyLoran Backend API running → http://${ip}:${port}`);
 });

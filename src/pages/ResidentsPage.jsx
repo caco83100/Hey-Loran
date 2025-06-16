@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import '../style/ResidentsPage.css';
+const ip = import.meta.env.VITE_SERVER_IP;
 
 function ResidentsPage() {
   const [residents, setResidents] = useState([]);
@@ -9,7 +10,7 @@ function ResidentsPage() {
 
   const fetchResidents = async () => {
     try {
-      const response = await fetch('http://localhost:4000/residents');
+      const response = await fetch(`http://${ip}:4000/residents`);
       const data = await response.json();
       setResidents(data);
     } catch (error) {
@@ -30,7 +31,7 @@ function ResidentsPage() {
     }
 
     try {
-      const response = await fetch('http://localhost:4000/residents', {
+      const response = await fetch(`http://${ip}:4000/residents`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ nom, prenom, aversion }),
@@ -44,17 +45,17 @@ function ResidentsPage() {
         setAversion('');
         fetchResidents(); // refresh liste
       } else {
-        console.error('Erreur lors de l\'ajout du résident');
+        console.error("Erreur lors de l\'ajout du résident");
       }
     } catch (error) {
-      console.error('Erreur réseau lors de l\'ajout du résident:', error);
+      console.error("Erreur réseau lors de l\'ajout du résident:", error);
     }
   };
 
   const handleDeleteResident = async (id) => {
     if (window.confirm('Voulez-vous vraiment supprimer ce résident ?')) {
       try {
-        const response = await fetch(`http://localhost:4000/residents/${id}`, {
+        const response = await fetch(`http://${ip}:4000/residents/${id}`, {
           method: 'DELETE',
         });
 
